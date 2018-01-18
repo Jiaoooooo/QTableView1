@@ -72,7 +72,8 @@ class TableDemo(QWidget):
         menu.exec_(QContextMenuEvent.globalPos())
 
     def hideCurrentColumn(self):
-        print(self.tabletView.currentIndex().column())
+        print('第%d列被隐藏了!'%self.tabletView.currentIndex().column())
+        self.tabletView.setColumnHidden(self.tabletView.currentIndex().column(),True)
 
 
 if __name__ == '__main__':
