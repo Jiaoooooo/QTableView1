@@ -4,24 +4,24 @@
 # Author: Jiao.1985@foxmail.com
 # 5-2-TableView-Fuctions-Test.py 2018/1/18 下午4:04
 
-import sys, random
-from PyQt5.QtWidgets import QWidget, QTableView, QVBoxLayout, QApplication, QMenu
-from PyQt5.QtCore import QEvent
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+import sys
 
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QWidget, QTableView, QVBoxLayout, QApplication, QMenu
+from PyQt5.QtCore import Qt
 
 class TableDemo(QWidget):
-    def __init__(self):
-        super(TableDemo, self).__init__()
+    def __init__(self, parent=None):
+        super(TableDemo, self).__init__(parent)
         self.setWindowTitle('TableView Demo')
         self.resize(600, 500)
 
         modelVerticalTitleLabelList = ['A', 'B', 'C', 'D', 'E']
-        modelHorizontialTitleLabelList = ['甲', '乙', '丙', '丁', '戊', '已']
+        modelHorizontalTitleLabelList = ['甲', '乙', '丙', '丁', '戊', '已']
 
         self.model = QStandardItemModel(5, 5)
         self.model.setHorizontalHeaderLabels(modelVerticalTitleLabelList)
-        self.model.setVerticalHeaderLabels(modelHorizontialTitleLabelList)
+        self.model.setVerticalHeaderLabels(modelHorizontalTitleLabelList)
         for i in range(5):
             for j in range(5):
                 item = QStandardItem(str(i + j))
@@ -65,15 +65,44 @@ class TableDemo(QWidget):
         self.tabletView.setCornerButtonEnabled(False)  # 此时,左上角的按钮将不再起作用
 
     def contextMenuEvent(self, QContextMenuEvent):
+        # 设置tableView的右键弹出菜单和菜单信号槽
+        # 如何只在单元格内弹出右键菜单呢?现在在空白地方点击右键也会弹出菜单????????
         menu = QMenu(self)
         hideMenu = menu.addAction('&Hide')
         hideMenu.triggered.connect(self.hideCurrentColumn)
 
+        # 设置显示所有被隐藏的列
+        showhiddenColumnMenu = menu.addAction('显示隐藏列')
+        showhiddenColumnMenu.triggered.connect(self.showAllHiddenColumns)
+
+        menu.addSeparator()
+
+        # 设置当前点击的列按照内容自适应列宽度
+        resizeColumnToCtnsMenu = menu.addAction('宽度适应')
+        resizeColumnToCtnsMenu.triggered.connect(
+        lambda: self.tabletView.resizeColumnToContents(self.tabletView.currentIndex().column()))
+
+        # 排序当前选择的列
+        orderCurentColumnMenu = menu.addAction('排序')
+        orderCurentColumnMenu.triggered.connect(self.orderCurrentColum)
+
         menu.exec_(QContextMenuEvent.globalPos())
 
     def hideCurrentColumn(self):
-        print('第%d列被隐藏了!'%self.tabletView.currentIndex().column())
-        self.tabletView.setColumnHidden(self.tabletView.currentIndex().column(),True)
+        print('第%d列被隐藏了!' % self.tabletView.currentIndex().column())
+        self.tabletView.setColumnHidden(self.tabletView.currentIndex().column(), True)
+
+    def showAllHiddenColumns(self):
+        print('显示所有被隐藏的列')
+        # 遍历所有的列,找到隐藏的列,设置其隐藏为False
+        for i in range(self.model.columnCount()):
+            if self.tabletView.isColumnHidden(i):
+                self.tabletView.setColumnHidden(i, False)
+                print('列%d已被重新显示' % (i + 1))
+
+    def orderCurrentColum(self):
+        self.tabletView.setSortingEnabled(True)
+        self.tabletView.sortByColumn(self.tabletView.currentIndex().column(),Qt.AscendingOrder)
 
 
 if __name__ == '__main__':
