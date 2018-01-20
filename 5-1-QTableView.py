@@ -96,7 +96,8 @@ class Table(QWidget):
         layout.addWidget(self.stateLabel)
         self.setLayout(layout)
 
-    def setStateLabel(self):
+    def setStateLabel(self,p_arg):
+        print(p_arg)
         '''获取当前tableView的大小和鼠标点击的位置,以及选择和框选区大小'''
         selectedIndexes = self.tabletView.selectedIndexes()
 
