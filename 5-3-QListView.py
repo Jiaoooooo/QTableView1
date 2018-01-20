@@ -5,8 +5,9 @@
 # 5-3-QListView.py 2018/1/19 下午3:34
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QListView, QMessageBox
+
 from PyQt5.QtCore import QStringListModel
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QListView, QMessageBox
 
 
 # from PyQt5.QtGui import *
@@ -33,14 +34,15 @@ class ListViewDemo(QWidget):
 
         self.setLayout(mainLayout)
 
-    def showSelectedItem(self,qModelIndex):
+    def showSelectedItem(self, qModelIndex):
         # 我靠这里好神奇!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # 信号槽中没有传递参数,这里哪里冒出来一个位置参数
         # 这个参数还知道自己是个QModelIndex类对象,太神奇了!
         QMessageBox.information(self, '显示', '你选择了' + self.qList[qModelIndex.row()])
-        #个人猜测可能是ListView的clicked信号发射时,内置了一个QModelIndex类型的参数
-        #查询技术文档:证实了我的猜想:见下面
-        #void QAbstractItemView :: clicked（const QModelIndex＆index）
+        # 个人猜测可能是ListView的clicked信号发射时,内置了一个QModelIndex类型的参数
+        # 查询技术文档:证实了我的猜想:见下面
+        # void QAbstractItemView :: clicked（const QModelIndex＆index）
+        # Pycharm的Github测试
 
 
 if __name__ == '__main__':
